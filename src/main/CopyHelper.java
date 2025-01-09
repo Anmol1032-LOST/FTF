@@ -76,6 +76,6 @@ public class CopyHelper {
     }
 
     private static int inKb(long size) {
-        return size < Integer.MAX_VALUE ? (int) (size) : Integer.MAX_VALUE;
+        return size / 1024 < Integer.MAX_VALUE ? (int) (size/1024) : Integer.MAX_VALUE;
     }
 }

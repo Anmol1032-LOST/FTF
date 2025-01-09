@@ -114,6 +114,15 @@ public class Main {
 
     private void search(File src) {
         for (File file : Objects.requireNonNull(src.listFiles())) {
+
+            /// uncomment this for recursive search (but the file location data will be lost)
+//            if (file.isDirectory()) {
+//                search(src);
+//                if (Objects.requireNonNull(src.listFiles()).length == 0) {
+//                    boolean ignored = src.delete();
+//                }
+//            }
+
             boolean found = false;
             for (Map.Entry<String, File> entry : locations.entrySet()) {
                 String s = entry.getKey();

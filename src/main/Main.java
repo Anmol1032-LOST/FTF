@@ -22,7 +22,7 @@ public class Main {
 
     private void readData() {
         if (!sharedDataFile.exists()) try {
-            if (sharedDataFile.createNewFile()) {
+            if (!sharedDataFile.createNewFile()) {
                 throw new IOException("Cannot create " + sharedDataFile + " file.");
             }
         } catch (IOException e) {
@@ -30,7 +30,7 @@ public class Main {
         }
 
         if (!dataFile.exists()) try {
-            if (dataFile.createNewFile()) {
+            if (!dataFile.createNewFile()) {
                 throw new IOException("Cannot create " + dataFile + " file.");
             }
         } catch (IOException e) {

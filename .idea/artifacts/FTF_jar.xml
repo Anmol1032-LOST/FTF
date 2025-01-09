@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="FTF:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/FTF_jar</output-path>
+    <root id="archive" name="FTF.jar">
+      <element id="module-output" name="FTF" />
+    </root>
+  </artifact>
+</component>

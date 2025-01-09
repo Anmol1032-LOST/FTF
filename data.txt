@@ -1,0 +1,3 @@
+[X]=C:\Users\91750\Desktop\CODE\FTF\testing\to\x
+[Y]=C:\Users\91750\Desktop\CODE\FTF\testing\to\y
+[Z]=C:\Users\91750\Desktop\CODE\FTF\testing\to\z

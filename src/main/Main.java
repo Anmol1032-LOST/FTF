@@ -10,17 +10,28 @@ public class Main {
     private final static File sharedDataFile = new File("shared.txt");
     private final static HashSet<String> shared = new HashSet<>();
     private final static ArrayList<String> newlyShared = new ArrayList<>();
-    private static boolean saved = false;
     private final MainGui mainGui;
     public static HashMap<String, File> locations = new LinkedHashMap<>();
     public static final String separator = "=";
 
     public Main(MainGui mainGui) {
         this.mainGui = mainGui;
-        readData();
+
+        Thread.setDefaultUncaughtExceptionHandler(new Thread.UncaughtExceptionHandler() {
+            private static final Thread.UncaughtExceptionHandler handler = Thread.getDefaultUncaughtExceptionHandler();
+
+            @Override
+            public void uncaughtException(Thread t, Throwable e) {
+                mainGui.loge("Error: " + e.getMessage());
+                e.printStackTrace(System.err);
+                save();
+                if (handler != null)
+                    handler.uncaughtException(t, e);
+            }
+        });
     }
 
-    private void readData() {
+    public void readData() {
         if (!sharedDataFile.exists()) try {
             if (!sharedDataFile.createNewFile()) {
                 throw new IOException("Cannot create " + sharedDataFile + " file.");
@@ -38,6 +49,7 @@ public class Main {
         }
 
 
+        shared.clear();
         try (BufferedReader reader = new BufferedReader(new FileReader(sharedDataFile))) {
             String line;
 
@@ -51,6 +63,7 @@ public class Main {
         }
 
 
+        locations.clear();
         try (BufferedReader reader = new BufferedReader(new FileReader(dataFile))) {
             String line;
             String[] split;
@@ -70,9 +83,6 @@ public class Main {
     }
 
     private void save() {
-        if (saved) return;
-        saved = true;
-
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(sharedDataFile, true))) {
             for (String string : newlyShared) {
                 writer.write(string);
@@ -82,21 +92,11 @@ public class Main {
             mainGui.loge(e.getMessage());
             e.printStackTrace(System.err);
         }
+        newlyShared.clear();
     }
 
     public void start(File src) {
-        Thread.setDefaultUncaughtExceptionHandler(new Thread.UncaughtExceptionHandler() {
-            private static final Thread.UncaughtExceptionHandler handler = Thread.getDefaultUncaughtExceptionHandler();
-
-            @Override
-            public void uncaughtException(Thread t, Throwable e) {
-                mainGui.loge("Error: " + e.getMessage());
-                e.printStackTrace(System.err);
-                save();
-                if (handler != null)
-                    handler.uncaughtException(t, e);
-            }
-        });
+        readData();
 
         for (File f : locations.values()) {
             boolean ignored = f.mkdirs();

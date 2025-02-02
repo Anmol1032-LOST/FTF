@@ -11,6 +11,7 @@ import java.util.stream.Stream;
 
 public class CopyHelper {
     private static long progress = 0;
+
     public static void copyDirectory(File sourceLocation, File targetLocation, MainGui mainGui, boolean isRoot) throws IOException {
         if (isRoot) {
             mainGui.setFileProgressBarMax(getDirectorySize(sourceLocation));
@@ -55,6 +56,23 @@ public class CopyHelper {
         }
     }
 
+    public static void rawCopyFile(InputStream src, File dst) throws IOException {
+        if (dst.exists()) {
+            throw new RuntimeException("File already exists: " + dst);
+        }
+
+        OutputStream out = new FileOutputStream(dst);
+
+        byte[] buffer = new byte[16392];
+        int length;
+        while ((length = src.read(buffer)) > 0) {
+            out.write(buffer, 0, length);
+        }
+
+        src.close();
+        out.close();
+    }
+
     public static int getDirectorySize(File directory) throws IOException {
         long size = 0;
         if (directory.isDirectory()) {
@@ -76,6 +94,6 @@ public class CopyHelper {
     }
 
     private static int inKb(long size) {
-        return size / 1024 < Integer.MAX_VALUE ? (int) (size/1024) : Integer.MAX_VALUE;
+        return size / 1024 < Integer.MAX_VALUE ? (int) (size / 1024) : Integer.MAX_VALUE;
     }
 }

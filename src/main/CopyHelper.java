@@ -12,9 +12,25 @@ import java.util.stream.Stream;
 public class CopyHelper {
     private static long progress = 0;
 
+    public static boolean isParentDirectory(File parentDirPath, File childPath) {
+        Path parentPath = parentDirPath.toPath().toAbsolutePath();
+        Path childPathObj = childPath.toPath().toAbsolutePath();
+
+        if (parentPath.equals(childPathObj)) {
+            return true;
+        }
+
+        return childPathObj.startsWith(parentPath);
+    }
+
     public static void copyDirectory(File sourceLocation, File targetLocation, MainGui mainGui, boolean isRoot) throws IOException {
         if (isRoot) {
-            mainGui.setFileProgressBarMax(getDirectorySize(sourceLocation));
+            if (isParentDirectory(sourceLocation, targetLocation)) {
+                mainGui.loge("Destination " + targetLocation + " is contained in source " + sourceLocation + ", will cause recursion if tried to copy.");
+                return;
+            }
+
+                mainGui.setFileProgressBarMax(getDirectorySize(sourceLocation));
             progress = 0;
         }
 

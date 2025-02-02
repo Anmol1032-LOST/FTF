@@ -3,7 +3,6 @@ package main.gui;
 import main.CopyHelper;
 import main.Main;
 
-import javax.imageio.ImageIO;
 import javax.swing.*;
 import javax.swing.border.BevelBorder;
 import javax.swing.border.Border;
@@ -11,7 +10,6 @@ import java.awt.*;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
 import java.awt.image.BufferedImage;
-import java.awt.image.ImageObserver;
 import java.io.File;
 import java.io.IOException;
 
@@ -80,7 +78,7 @@ public class MainGui extends JFrame {
                 CopyHelper.rawCopyFile(MainGui.class.getClassLoader().getResourceAsStream("LoadingImage.gif"), loadingImageFile);
             }
 
-            int imageY = height/4;
+            int imageY = height / 4;
             Image image = Toolkit.getDefaultToolkit().getImage(loadingImageFile.toURI().toURL());
             image = image.getScaledInstance(-1, imageY, Image.SCALE_DEFAULT);
 
@@ -186,7 +184,16 @@ public class MainGui extends JFrame {
                 fileField.setEditable(true);
                 fileButton.setEnabled(true);
 
-                mainThread.interrupt();
+                logd("Trying to Force Stop");
+                CopyHelper.canCopy = false;
+                try {
+                    mainThread.join();
+                } catch (InterruptedException ex) {
+                    throw new RuntimeException(ex);
+                }
+                CopyHelper.canCopy = true;
+                logd("Force Stop successfully");
+
                 started = false;
                 runButton.setText("Run again");
             }

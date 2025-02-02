@@ -12,6 +12,8 @@ import java.util.stream.Stream;
 public class CopyHelper {
     private static long progress = 0;
 
+    public static boolean canCopy = true;
+
     public static boolean isParentDirectory(File parentDirPath, File childPath) {
         Path parentPath = parentDirPath.toPath().toAbsolutePath();
         Path childPathObj = childPath.toPath().toAbsolutePath();
@@ -24,6 +26,11 @@ public class CopyHelper {
     }
 
     public static void copyDirectory(File sourceLocation, File targetLocation, MainGui mainGui, boolean isRoot) throws IOException {
+        if (!canCopy) {
+            mainGui.loge("Stopping coping on file: " + sourceLocation);
+            throw new RuntimeException("Stopping coping on file: " + sourceLocation);
+        }
+
         if (isRoot) {
             if (isParentDirectory(sourceLocation, targetLocation)) {
                 mainGui.loge("Destination " + targetLocation + " is contained in source " + sourceLocation + ", will cause recursion if tried to copy.");
